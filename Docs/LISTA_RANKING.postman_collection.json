@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "31021c2d-cd3d-428b-ab2f-85c43952f597",
+		"name": "FOLDER",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LISTA RANKING",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://52.67.99.123:3000/api/v2/ranking/top-money",
+					"protocol": "http",
+					"host": [
+						"52",
+						"67",
+						"99",
+						"123"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v2",
+						"ranking",
+						"top-money"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

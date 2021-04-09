@@ -1,8 +1,12 @@
 package automacaogodare;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import io.appium.java_client.MobileBy.ByAccessibilityId;
 
 public class ChamaMetodosKwai extends MetodosGenericos {
 
@@ -12,79 +16,54 @@ public class ChamaMetodosKwai extends MetodosGenericos {
 				inicializaSessao();
 				execute();
 			} catch (Exception e) {
-				finalizaSessao();
 				e.printStackTrace();
 			}
+			finalizaSessao();
 		}
 	}
 
 	public void execute() throws IOException {
+		LocalDateTime actualTime = LocalDateTime.now();
 
-		backNoWait();
-		backNoWait();
+		back();
+		back();
 		clickByAcessibilityId("Kwai");
-		waitTime(3000L);
+		waitTime(5000L);
 
-		click(By.id("com.kwai.video:id/iv_home_bottom_icon"));
-
-		while (true) {
+		while (LocalDateTime.now().isBefore(actualTime.plusMinutes(5))) {
 			assistirVídeos();
 		}
-
-//		
-//		
-//		while (true) {
-//			swipeUp(10.0);
-//		}
-
-//			tap(Elements.getBotaoIniciarJogo(), 300);
-//			waitTime(5000L);
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			tapAndHold(Elements.getBotaoAcelerar(), 500);
-//			tapAndHold(Elements.getBotaoFrear(), 500);
-//			
-//			System.out.println("Acabou sequência");
-//			
-//			tapAndHold(Elements.getBotaoFrear(), 4000);
-//			waitTime(12000L);
-//			tap(Elements.getBotaoIniciarJogo(), 300);
-//			waitTime(1000L);
-//		}
+		
+		backNoWait();
+		backNoWait();
 	}
 
 	private void assistirVídeos() {
-		swipeUp(40.0);
+//		if (isAvailableById("com.kwai.video:id/close_button")) {
+//			click(By.id("com.kwai.video:id/close_button"));
+//		}
+		clickIfAvailable("com.kwai.video:id/iv_home_bottom_icon");
 		waitRandomTime(12000L);
+		swipeUp(40.0);
+	}
+
+	private void verificarRecompensaDiaria() {
+		clickIfAvailable("com.kwai.video:id/me_layout");
+		clickIfAvailable("com.kwai.video:id/fission_task_entry");
+
+		WebElement we = getByClassNameAndContentDescCointainingText("android.view.View", "Receber  ");
+		if (!Objects.isNull(we)) {
+			we.click();
+		}
+
+		waitForElement(ByAccessibilityId.AccessibilityId("FAQ"), 20);
+
+		waitTime(3000L);
+
+		swipeUp(40.0);
+
+		tapByFixedXAndYPoint(driver.findElementByAccessibilityId("Recompensa diária").getLocation(), 90.0);
+
+		back();
 	}
 }

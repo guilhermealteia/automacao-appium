@@ -21,9 +21,11 @@ public class MobileConnection {
 
 		while (tries < 5) {
 			try {
+				killDriver();
+				
 				System.out.println("Tentativa nº" + tries);
 				driver = getAndroid();
-				driver.manage().timeouts().implicitlyWait(5, TimeUnit.MINUTES);
+				driver.manage().timeouts().implicitlyWait(1, TimeUnit.MINUTES);
 				System.out.println(driver.getSessionId());
 				
 				return driver;
@@ -59,7 +61,13 @@ public class MobileConnection {
 	}
 	
 	public void killDriver(){
+		try {
 		driver.close();
+		System.out.println("INFO: Connection closed");
 		driver.quit();
+		System.out.println("INFO: Connection quited");
+		} catch (Exception e) {
+			System.out.println("ERROR: Error trying to kill connection");
+		}
 	}
 }

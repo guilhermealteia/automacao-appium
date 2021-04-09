@@ -6,11 +6,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -69,13 +70,13 @@ public class MetodosGenericos extends MobileConnection {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void waitRandomTime(long time) {
 		try {
 			long leftLimit = 4000L;
-		    long rightLimit = time;
-		    long generatedLong = leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
-		    System.out.println(generatedLong);
+			long rightLimit = time;
+			long generatedLong = leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
+			System.out.println(generatedLong);
 			Thread.sleep((long) generatedLong);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -95,12 +96,33 @@ public class MetodosGenericos extends MobileConnection {
 				if (contentDesc.equals(w.getAttribute("content-desc"))) {
 					return true;
 				}
-			} catch (NoSuchElementException e) {
-			}
+			} catch (Exception e) {}
 		}
 		return false;
 	}
+	
+	public WebElement getByClassNameAndContentDescCointainingText(String className, String partialContentDesc) {
 
+		List<WebElement> arrayOfProperties2 = driver.findElementsByClassName("android.widget.TextView");
+
+		for (WebElement w : arrayOfProperties2) {
+			try {
+				if (w.getAttribute("content-desc").contains(partialContentDesc)) {
+					return w;
+				}
+			} catch (Exception e) {}
+		}
+		return null;
+	}
+	
+	public boolean isAvailableById(String id) {
+		if (Objects.isNull(waitForElement(By.id(id), 2L))) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	public void back() {
 		driver.navigate().back();
 		waitTime(3000);
@@ -108,7 +130,6 @@ public class MetodosGenericos extends MobileConnection {
 
 	public void backNoWait() {
 		driver.navigate().back();
-		waitTime(3000);
 	}
 
 	public void click(By by) {
@@ -117,6 +138,19 @@ public class MetodosGenericos extends MobileConnection {
 
 	public void clickByAcessibilityId(String by) {
 		driver.findElementsByAccessibilityId(by).get(0).click();
+	}
+	
+	public void clickIfAvailable(String id) {
+		if (!Objects.isNull(waitForElement(By.id(id), 2L))) {
+			driver.findElement(By.id(id)).click();
+		} 
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void tapByFixedXAndYPoint(Point point, Double xOffsetPercent) {
+		TouchAction touchAction = new TouchAction(driver);
+		touchAction.tap(PointOption.point(porcentagem(Elements.x, xOffsetPercent), point.getY())).perform();
+		waitTime(2000);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -154,14 +188,13 @@ public class MetodosGenericos extends MobileConnection {
 
 	@SuppressWarnings("rawtypes")
 	public void swipeUp(Double percent) {
-		
+
 		long timeBeteweenActions = 200L;
 
-		new TouchAction(driver)
-				.press(PointOption.point(porcentagem(Elements.x, 50.0), porcentagem(Elements.y, 80.0)))
+		new TouchAction(driver).press(PointOption.point(porcentagem(Elements.x, 50.0), porcentagem(Elements.y, 80.0)))
 				.waitAction(WaitOptions.waitOptions(Duration.ofMillis(timeBeteweenActions)))
-				.moveTo(PointOption.point(porcentagem(Elements.x, 50.0), porcentagem(Elements.y, 10.0)))
-				.release().perform();
+				.moveTo(PointOption.point(porcentagem(Elements.x, 50.0), porcentagem(Elements.y, 10.0))).release()
+				.perform();
 		System.out.println();
 	}
 
@@ -187,17 +220,9 @@ public class MetodosGenericos extends MobileConnection {
 		waitTime(1000);
 	}
 
-	public WebElement waitForElementToBeClickable(WebElement element) {
-		for (int i = 0; i < 2; i++) {
-			try {
-				FluentWait<WebDriver> wait = new WebDriverWait(driver, DEFAULT_TIME_TO_WAIT_FOR_ELEMENT);
-				wait.until(ExpectedConditions.elementToBeClickable(element));
-				System.out.println("Elemento encontrado");
-			} catch (Exception e) {
-				System.out.println("Elemento não encontrado. Tentando novamente");
-			}
-		}
-		return element;
+	public WebElement waitForElement(By by, long waitSeconds) {
+		FluentWait<WebDriver> wait = new WebDriverWait(driver, DEFAULT_TIME_TO_WAIT_FOR_ELEMENT);
+		return wait.until(ExpectedConditions.presenceOfElementLocated(by));
 	}
 
 	public WebElement waitForElementToBeSelectable(WebElement element, String text) {
